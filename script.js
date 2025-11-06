@@ -21,15 +21,64 @@ moviesList.forEach((_movie) => {
 
 //updating the movie name and movie price based on the selection in the dropdown
 selectMovieDropdown.addEventListener("change", (event) => {
-  console.log(event.target.selectedOptions[0]);
   const selectedOption = event.target.selectedOptions[0];
   const movieName = selectedOption.value;
   const moviePrice = selectedOption.dataset.price;
-  console.log(movieNameEl, moviePriceEl);
   movieNameEl.textContent = movieName;
   moviePriceEl.textContent = moviePrice;
 });
 
 //Add eventLister to each unoccupied seat
+
+const allSeats = document.querySelectorAll("#seatCont .seat");
+const selectedSeatsHolder = document.getElementById("selectedSeatsHolder");
+const numberOfSeatsEl = document.getElementById("numberOfSeat");
+const totalPriceEl = document.getElementById("totalPrice");
+let ticketPrice = moviesList[0].price; //default price
+let selectedSeats = [];
+
+allSeats.forEach((_seat, _index) => {
+  // if (_seat.classList.contains("occupied")) {
+  //   return;
+  // }
+  _seat.addEventListener("click", () => {
+    console.log("seat", _seat);
+    _seat.classList.toggle("selected");
+
+    if (_seat.classList.contains("selected")) {
+      selectedSeats.push(_index);
+    } else {
+      selectedSeats.filter((_i) => _i !== _index);
+    }
+
+    updateSelectedSeatsDisplay();
+    updatePrice();
+  });
+});
+
+function updateSelectedSeatsDisplay() {
+  selectedSeatsHolder.innerHTML = "";
+  if (selectedSeats.length === 0) {
+    selectedSeatsHolder.innerHTML =
+      "<span class='noSelected'>No Seat Selected</span>";
+    return;
+  }
+
+  selectedSeats.forEach((_seatIndex) => {
+    console.log(_seatIndex);
+    const seatEl = document.createElement("span");
+    seatEl.classList.add("selectedSeat");
+    seatEl.innerText = `${_seatIndex + 1}`;
+    selectedSeatsHolder.appendChild(seatEl);
+  });
+
+  numberOfSeatsEl.textContent = selectedSeats.length;
+}
+
+function updatePrice() {
+  const total = selectedSeats.length * ticketPrice;
+  totalPriceEl.textContent = `$ ${total}`;
+}
+
 //Add eventLsiter to continue Button
 //Add eventListerner to Cancel Button
