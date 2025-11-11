@@ -8,6 +8,7 @@ const moviesList = [
 const selectMovieDropdown = document.querySelector("#selectMovie");
 const movieNameEl = document.getElementById("movieName");
 const moviePriceEl = document.getElementById("moviePrice");
+let ticketPrice = moviesList[0].price; //setting to a default price
 
 moviesList.forEach((_movie) => {
   const option = document.createElement("option");
@@ -26,6 +27,7 @@ selectMovieDropdown.addEventListener("change", (event) => {
   const moviePrice = selectedOption.dataset.price;
   movieNameEl.textContent = movieName;
   moviePriceEl.textContent = moviePrice;
+  ticketPrice = moviePrice;
 });
 
 //Add eventLister to each unoccupied seat
@@ -34,23 +36,20 @@ const allSeats = document.querySelectorAll("#seatCont .seat");
 const selectedSeatsHolder = document.getElementById("selectedSeatsHolder");
 const numberOfSeatsEl = document.getElementById("numberOfSeat");
 const totalPriceEl = document.getElementById("totalPrice");
-let ticketPrice = moviesList[0].price; //default price
 let selectedSeats = [];
 
 allSeats.forEach((_seat, _index) => {
-  // if (_seat.classList.contains("occupied")) {
-  //   return;
-  // }
+  if (_seat.classList.contains("occupied")) {
+    return;
+  }
   _seat.addEventListener("click", () => {
-    console.log("seat", _seat);
     _seat.classList.toggle("selected");
 
     if (_seat.classList.contains("selected")) {
       selectedSeats.push(_index);
     } else {
-      selectedSeats.filter((_i) => _i !== _index);
+      selectedSeats = selectedSeats.filter((_i) => _i !== _index);
     }
-
     updateSelectedSeatsDisplay();
     updatePrice();
   });
@@ -65,7 +64,6 @@ function updateSelectedSeatsDisplay() {
   }
 
   selectedSeats.forEach((_seatIndex) => {
-    console.log(_seatIndex);
     const seatEl = document.createElement("span");
     seatEl.classList.add("selectedSeat");
     seatEl.innerText = `${_seatIndex + 1}`;
