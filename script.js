@@ -41,7 +41,6 @@ let selectedSeats = [];
 allSeats.forEach((_seat, _index) => {
   _seat.addEventListener("click", () => {
     if (_seat.classList.contains("occupied")) {
-      console.log("here");
       return;
     }
     _seat.classList.toggle("selected");
@@ -51,16 +50,17 @@ allSeats.forEach((_seat, _index) => {
     } else {
       selectedSeats = selectedSeats.filter((_i) => _i !== _index);
     }
-    updateSelectedSeatsDisplay();
+    updateSelectedSeatsDisplay(selectedSeats);
     updatePrice();
   });
 });
 
-function updateSelectedSeatsDisplay() {
+function updateSelectedSeatsDisplay(selectedSeats) {
   selectedSeatsHolder.innerHTML = "";
   if (selectedSeats.length === 0) {
     selectedSeatsHolder.innerHTML =
       "<span class='noSelected'>No Seat Selected</span>";
+    numberOfSeatsEl.textContent = 0;
     return;
   }
 
@@ -70,7 +70,6 @@ function updateSelectedSeatsDisplay() {
     seatEl.innerText = `${_seatIndex + 1}`;
     selectedSeatsHolder.appendChild(seatEl);
   });
-
   numberOfSeatsEl.textContent = selectedSeats.length;
 }
 
@@ -83,6 +82,14 @@ function updatePrice() {
 
 const contBtn = document.getElementById("proceedBtn");
 
+function updateValuesToDefault() {
+  selectedSeatsHolder.innerHTML =
+    "<span class='noSelected'>No Seat Selected</span>";
+  numberOfSeatsEl.textContent = "0";
+  totalPriceEl.textContent = `$ 0`;
+  selectedSeats = [];
+}
+
 contBtn.addEventListener("click", () => {
   if (selectedSeats.length === 0) {
     alert("Oops no seat Selected");
@@ -90,17 +97,24 @@ contBtn.addEventListener("click", () => {
     const seatsWithSelectedCls = document.querySelectorAll(
       "#seatCont .seat.selected"
     );
-    // console.log("seatsWithSelectedCls", seatsWithSelectedCls);
     seatsWithSelectedCls.forEach((_selectedSeat) => {
       _selectedSeat.classList.remove("selected");
       _selectedSeat.classList.add("occupied");
     });
-    selectedSeatsHolder.innerHTML =
-      "<span class='noSelected'>No Seat Selected</span>";
-    numberOfSeatsEl.textContent = "0";
-    totalPriceEl.textContent = `$ 0`;
+    updateValuesToDefault();
     alert("Yayy! Your Seats have been booked");
   }
 });
 
 //Add eventListerner to Cancel Button
+const cancelBtn = document.getElementById("cancelBtn");
+cancelBtn.addEventListener("click", () => {
+  const seatsWithSelectedCls = document.querySelectorAll(
+    "#seatCont .seat.selected"
+  );
+
+  seatsWithSelectedCls.forEach((_selectedSeat) => {
+    _selectedSeat.classList.remove("selected");
+  });
+  updateValuesToDefault();
+});
