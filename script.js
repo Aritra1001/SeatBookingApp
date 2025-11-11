@@ -39,10 +39,11 @@ const totalPriceEl = document.getElementById("totalPrice");
 let selectedSeats = [];
 
 allSeats.forEach((_seat, _index) => {
-  if (_seat.classList.contains("occupied")) {
-    return;
-  }
   _seat.addEventListener("click", () => {
+    if (_seat.classList.contains("occupied")) {
+      console.log("here");
+      return;
+    }
     _seat.classList.toggle("selected");
 
     if (_seat.classList.contains("selected")) {
@@ -79,4 +80,27 @@ function updatePrice() {
 }
 
 //Add eventLsiter to continue Button
+
+const contBtn = document.getElementById("proceedBtn");
+
+contBtn.addEventListener("click", () => {
+  if (selectedSeats.length === 0) {
+    alert("Oops no seat Selected");
+  } else {
+    const seatsWithSelectedCls = document.querySelectorAll(
+      "#seatCont .seat.selected"
+    );
+    // console.log("seatsWithSelectedCls", seatsWithSelectedCls);
+    seatsWithSelectedCls.forEach((_selectedSeat) => {
+      _selectedSeat.classList.remove("selected");
+      _selectedSeat.classList.add("occupied");
+    });
+    selectedSeatsHolder.innerHTML =
+      "<span class='noSelected'>No Seat Selected</span>";
+    numberOfSeatsEl.textContent = "0";
+    totalPriceEl.textContent = `$ 0`;
+    alert("Yayy! Your Seats have been booked");
+  }
+});
+
 //Add eventListerner to Cancel Button
